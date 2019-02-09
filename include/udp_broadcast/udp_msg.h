@@ -39,8 +39,9 @@ bool udp_encode(RobotMsg& msg, uint8_t send_bytes[])
 
 bool udp_decode(RobotMsg& msg, uint8_t send_bytes[], const int bytes_transferred)
 {
-    if (msg.udp_lens   == bytes_transferred  && 
-        msg.frame_head == send_bytes[0]      && 
+    if (msg.car_id     != send_bytes[1]      &&  // check if self-robot
+        msg.udp_lens   == bytes_transferred  &&  // check length
+        msg.frame_head == send_bytes[0]      &&
         msg.frame_tail == send_bytes[bytes_transferred - 1] )
     {
         // ok! decode.

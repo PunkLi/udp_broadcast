@@ -20,23 +20,23 @@ int main(int argc, char **argv)
     ip::udp::endpoint sender_endpoint;
   
     // Receive data.
-    RobotMsg msg;
+    
     uint8_t send_bytes[8];
     
 start:
     std::size_t bytes_transferred = socket.receive_from(boost::asio::buffer(send_bytes), sender_endpoint);
-  
-    std::cout << "remote host ip : " << sender_endpoint.address().to_string() <<"\n";
 
-    udp_decode(msg, send_bytes, bytes_transferred);
-
-    std::cout << "got " << bytes_transferred << " bytes. \t " 
-        << " car_id: "<< msg.car_id 
-        << " yaw: "<< msg.yaw 
-        << " pitch: "<< msg.pitch 
-        << " car_distance: "<< msg.distance 
-        << "\n";
-
+    RobotMsg msg;
+    if (udp_decode(msg, send_bytes, bytes_transferred))
+    {
+        std::cout << "remote host ip : " << sender_endpoint.address().to_string() <<"\t";
+        std::cout << "got " << bytes_transferred << " bytes. " 
+            << "      car_id: "<< msg.car_id 
+            << "      yaw: "<< msg.yaw 
+            << "      pitch: "<< msg.pitch 
+            << "      car_distance: "<< msg.distance 
+            << "\n";
+    }
 goto start;
 
     return EXIT_SUCCESS;
